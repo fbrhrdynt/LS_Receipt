@@ -1,0 +1,4 @@
+## Pages
+- [- Receipt Generator by Febro Herdyanto`}](/generator): Create professional thermal receipts with our easy-to-use generator. Real-time preview, currency selection, and instant export.
+- [- Receipt Generator`}](/history): View and manage your thermal receipt history. Search, filter, duplicate, and print previous receipts.
+- [$`}](/*): No description available

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://receipt.febroherdyanto.web.id/sitemap.xml

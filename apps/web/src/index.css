@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "DM Sans", sans-serif;
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 13% 18%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 220 13% 95%;
+    --muted-foreground: 220 9% 46%;
+    
+    --accent: 217 91% 95%;
+    --accent-foreground: 217 91% 60%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
+    
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 98%;
+    
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 217 91% 60%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl;
+  }
+  
+  .glass-card {
+    @apply bg-white/50 dark:bg-black/30 backdrop-blur-lg border border-white/30 dark:border-white/5 shadow-lg;
+  }
+
+  .mesh-bg {
+    background-color: hsla(var(--background));
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(217, 91%, 60%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(280, 80%, 60%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(160, 80%, 60%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(320, 80%, 60%, 0.15) 0px, transparent 50%);
+  }
+
+  /* Thermal Receipt Container Styles */
+  .receipt-container {
+    background-color: #ffffff;
+    color: #000000;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .receipt-container * {
+    color: #000000;
+  }
+
+  .font-mono-custom {
+    font-family: "Space Mono", "Courier New", Courier, monospace;
+  }
+
+  .font-sans-custom {
+    font-family: "DM Sans", sans-serif;
+  }
+
+  .font-serif-custom {
+    font-family: "Playfair Display", serif;
+  }
+
+  /* Custom Dividers for Templates */
+  .divider-dash {
+    border-top: 1px dashed #000;
+    margin: 8px 0;
+  }
+  .divider-dot {
+    border-top: 1px dotted #000;
+    margin: 8px 0;
+  }
+  .divider-solid {
+    border-top: 1px solid #000;
+    margin: 8px 0;
+  }
+  .divider-double {
+    border-top: 3px double #000;
+    margin: 8px 0;
+  }
+  .divider-star::before {
+    content: "****************************************";
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .divider-eq::before {
+    content: "========================================";
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .divider-wave::before {
+    content: "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    margin: 6px 0;
+  }
+}
