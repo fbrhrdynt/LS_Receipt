@@ -3,12 +3,13 @@ import { Eye, Copy, Printer, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency } from '@/utils/CurrencySystem';
 
 export default function HistoryItem({ receipt, onView, onDuplicate, onPrint, onDelete }) {
   const { t } = useLanguage();
 
   const calculateTotal = () => {
-    const subtotal = receipt.items.reduce((sum, item) => sum + (item.total || 0), 0);
+    const subtotal = (receipt.items || []).reduce((sum, item) => sum + (item.total || 0), 0);
     const discount = receipt.discountType === 'percentage' 
       ? (subtotal * parseFloat(receipt.discountValue || 0)) / 100
       : parseFloat(receipt.discountValue || 0);
@@ -27,7 +28,7 @@ export default function HistoryItem({ receipt, onView, onDuplicate, onPrint, onD
             <div className="text-sm text-muted-foreground">{receipt.orderId || 'No Order ID'}</div>
           </div>
           <div className="text-right">
-            <div className="font-bold text-lg">${calculateTotal().toFixed(2)}</div>
+            <div className="font-bold text-lg">{formatCurrency(calculateTotal(), receipt.currency || 'IDR')}</div>
             <div className={`text-xs font-medium ${receipt.isPaid ? 'text-green-600' : 'text-orange-600'}`}>
               {receipt.isPaid ? t('form.paid') : t('form.unpaid')}
             </div>

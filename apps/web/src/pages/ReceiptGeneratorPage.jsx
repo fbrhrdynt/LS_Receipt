@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 import { Download, Printer, FileImage, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -12,6 +13,7 @@ import { exportAsJPG, exportAsPNG, exportAsPDF, printReceipt } from '@/utils/Rec
 
 export default function ReceiptGeneratorPage() {
   const { t } = useLanguage();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     currency: 'IDR',
     template: 'warungMakan',
@@ -53,6 +55,23 @@ export default function ReceiptGeneratorPage() {
     isPaid: false,
     footerNote: ''
   });
+
+  useEffect(() => {
+    const duplicated = location.state?.formData;
+    if (!duplicated) return;
+
+    setFormData((current) => ({
+      ...current,
+      ...duplicated,
+      visibility: {
+        ...current.visibility,
+        ...(duplicated.visibility || {}),
+      },
+      items: Array.isArray(duplicated.items) && duplicated.items.length
+        ? duplicated.items
+        : current.items,
+    }));
+  }, [location.state]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {

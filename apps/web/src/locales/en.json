@@ -77,7 +77,9 @@
     "print": "Print",
     "random": "Random",
     "show": "Show",
-    "hide": "Hide"
+    "hide": "Hide",
+    "reactTemplates": "React Templates",
+    "classicTemplates": "Classic Templates"
   },
   "visibility": {
     "title": "Visibility Settings",

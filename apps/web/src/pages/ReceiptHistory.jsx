@@ -124,7 +124,7 @@ export default function ReceiptHistory() {
                 <h3 className="text-xl font-semibold mb-2">{t('history.noReceipts')}</h3>
                 <p className="text-muted-foreground mb-6">{t('history.noReceiptsDescription')}</p>
                 <Button asChild className="transition-all duration-200 active:scale-[0.98]">
-                  <a href="/generator">{t('hero.cta')}</a>
+                  <a href="/generator">{t('home.cta')}</a>
                 </Button>
               </div>
             ) : (

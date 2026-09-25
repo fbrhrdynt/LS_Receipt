@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CURRENCY_CONFIG } from '@/utils/CurrencySystem';
-import { RECEIPT_TEMPLATES } from '@/utils/ReceiptTemplates';
+import { REACT_RECEIPT_TEMPLATES, CLASSIC_RECEIPT_TEMPLATES } from '@/templates/ReceiptTemplateRegistry';
 import {
   generateRandomStoreName,
   generateRandomCustomerName,
@@ -112,25 +112,62 @@ export default function ReceiptForm({ formData, setFormData }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {RECEIPT_TEMPLATES.map((tpl, idx) => (
-              <button
-                key={tpl.id}
-                onClick={() => updateField('template', tpl.id)}
-                className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all duration-200 text-center ${
-                  formData.template === tpl.id 
-                    ? 'border-primary ring-1 ring-primary bg-primary/10 shadow-sm' 
-                    : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                }`}
-              >
-                <div className={`text-lg font-black mb-1 ${formData.template === tpl.id ? 'text-primary' : 'text-muted-foreground'}`}>
-                  {idx + 1}
-                </div>
-                <div className="text-xs font-semibold leading-tight line-clamp-2">
-                  {t(`templates.${tpl.id}`)}
-                </div>
-              </button>
-            ))}
+          <div className="space-y-7">
+            <section>
+              <div className="mb-3">
+                <Label className="text-sm font-semibold">{t('form.reactTemplates')}</Label>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {REACT_RECEIPT_TEMPLATES.map((tpl, idx) => (
+                  <button
+                    key={tpl.id}
+                    type="button"
+                    aria-pressed={formData.template === tpl.id}
+                    onClick={() => updateField('template', tpl.id)}
+                    className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all duration-200 text-center ${
+                      formData.template === tpl.id
+                        ? 'border-primary ring-1 ring-primary bg-primary/10 shadow-sm'
+                        : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                    }`}
+                  >
+                    <div className={`text-lg font-black mb-1 ${formData.template === tpl.id ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {idx + 1}
+                    </div>
+                    <div className="text-xs font-semibold leading-tight line-clamp-2">
+                      {t(`templates.${tpl.id}`)}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="pt-6 border-t border-border">
+              <div className="mb-3">
+                <Label className="text-sm font-semibold">{t('form.classicTemplates')}</Label>
+              </div>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                {CLASSIC_RECEIPT_TEMPLATES.map((tpl, idx) => (
+                  <button
+                    key={tpl.id}
+                    type="button"
+                    aria-pressed={formData.template === tpl.id}
+                    onClick={() => updateField('template', tpl.id)}
+                    className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all duration-200 text-center ${
+                      formData.template === tpl.id
+                        ? 'border-primary ring-1 ring-primary bg-primary/10 shadow-sm'
+                        : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                    }`}
+                  >
+                    <div className={`text-lg font-black mb-1 ${formData.template === tpl.id ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {idx + 1}
+                    </div>
+                    <div className="text-[11px] font-semibold leading-tight">
+                      {tpl.name}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
           </div>
         </CardContent>
       </Card>
