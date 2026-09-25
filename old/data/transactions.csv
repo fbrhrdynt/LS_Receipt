@@ -1,0 +1,4 @@
+id_transaction,cust_name,date,time,total,pay_method,paid_total,kembalian
+1,user,2025-07-07,07:17,15000,Cash,20000,5000
+2,user,2025-07-07,08:14,15000,Cash,20000,5000
+3,1,fbr,2025-07-21,10:50,15000,QRIS,15000,0

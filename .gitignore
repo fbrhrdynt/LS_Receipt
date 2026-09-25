@@ -6,3 +6,4 @@ dist/
 .app-port
 npm-debug.log*
 .DS_Store
+exp.zip
