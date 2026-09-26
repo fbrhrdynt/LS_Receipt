@@ -2,23 +2,40 @@
   "nav": {
     "home": "Beranda",
     "generator": "Generator",
-    "history": "Riwayat"
+    "history": "Riwayat",
+    "language": "Bahasa",
+    "primaryNavigation": "Navigasi utama",
+    "switchToDark": "Gunakan mode gelap",
+    "switchToLight": "Gunakan mode terang",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu"
   },
   "home": {
     "title": "Generator Struk",
     "author": "oleh Febro Herdyanto",
-    "subtitle": "Buat, sesuaikan, dan ekspor struk thermal yang indah secara instan dengan antarmuka modern dan beragam template.",
-    "cta": "Mulai Membuat Nota"
+    "utilityLabel": "Alat pembuat struk berbasis browser",
+    "subtitle": "Isi detail transaksi, pilih template, lalu unduh atau cetak struk langsung dari browser.",
+    "cta": "Buat Struk Baru",
+    "historyCta": "Lihat Riwayat",
+    "workflow": {
+      "inputTitle": "Isi transaksi",
+      "inputText": "Masukkan toko, item, diskon, pajak, pembayaran, dan informasi pelanggan.",
+      "previewTitle": "Periksa hasil",
+      "previewText": "Pratinjau diperbarui saat data berubah, termasuk pilihan template React dan Classic.",
+      "outputTitle": "Ekspor atau cetak",
+      "outputText": "Simpan sebagai JPG, PNG, PDF, atau cetak dengan layout struk yang sama."
+    }
+  },
+  "generator": {
+    "subtitle": "Isi data transaksi dan periksa hasil struk sebelum diekspor.",
+    "description": "Buat, pratinjau, ekspor, dan cetak struk thermal langsung dari browser."
   },
   "footer": {
-    "company": "Generator Struk",
-    "description": "Pembuatan struk profesional menjadi sederhana.",
-    "links": {
-      "product": "Produk",
-      "company": "Perusahaan",
-      "legal": "Legal"
-    },
-    "copyright": "2026 Generator Struk. Hak cipta dilindungi."
+    "description": "Buat dan ekspor struk transaksi langsung dari browser.",
+    "product": "Produk",
+    "author": "Pembuat",
+    "portfolio": "febro.id",
+    "copyright": "2026 Receipt Generator oleh Febro Herdyanto."
   },
   "form": {
     "configuration": "Konfigurasi Struk",
@@ -58,7 +75,7 @@
     "serviceCharge": "Biaya Layanan (%)",
     "subtotal": "Subtotal",
     "totalDiscount": "Total Diskon",
-    "tax": "Pajak",
+    "tax": "Pajak dan Layanan",
     "grandTotal": "Total Akhir",
     "payment": "Pembayaran",
     "paymentMethod": "Metode Pembayaran",
@@ -68,18 +85,17 @@
     "unpaid": "Belum Lunas",
     "footer": "Footer",
     "footerNote": "Catatan Footer",
-    "randomFooter": "Footer Acak",
-    "customFooter": "Footer Kustom",
-    "export": "Ekspor",
+    "randomFooter": "Isi Contoh",
     "downloadJPG": "Unduh JPG",
     "downloadPNG": "Unduh PNG",
     "downloadPDF": "Unduh PDF",
     "print": "Cetak",
-    "random": "Acak",
-    "show": "Tampilkan",
-    "hide": "Sembunyikan",
     "reactTemplates": "Template React",
-    "classicTemplates": "Template Classic"
+    "classicTemplates": "Template Classic",
+    "randomStore": "Isi nama toko contoh",
+    "randomOrderId": "Buat ID pesanan",
+    "randomCashier": "Isi nama kasir contoh",
+    "randomCustomer": "Isi nama pelanggan contoh"
   },
   "visibility": {
     "title": "Pengaturan Visibilitas",
@@ -132,27 +148,33 @@
   },
   "history": {
     "title": "Riwayat Struk",
-    "search": "Cari struk...",
-    "filter": "Filter",
-    "dateRange": "Rentang Tanggal",
-    "paymentStatus": "Status Pembayaran",
-    "amountRange": "Rentang Jumlah",
+    "subtitle": "Cari, buka, duplikat, cetak, atau hapus struk yang tersimpan di browser ini.",
+    "description": "Kelola riwayat struk yang tersimpan di browser.",
+    "search": "Cari nama toko, ID pesanan, atau pelanggan",
     "view": "Lihat",
     "duplicate": "Duplikat",
-    "printAgain": "Cetak Lagi",
+    "printAgain": "Cetak lagi",
     "delete": "Hapus",
-    "noReceipts": "Tidak ada struk ditemukan",
-    "noReceiptsDescription": "Mulai buat struk untuk melihatnya di sini.",
-    "deleteConfirm": "Apakah Anda yakin ingin menghapus struk ini?",
+    "noReceipts": "Belum ada struk",
+    "noReceiptsDescription": "Buat struk baru untuk menambahkannya ke riwayat browser ini.",
     "deleted": "Struk berhasil dihapus",
-    "duplicated": "Struk dimuat ke generator",
-    "close": "Tutup"
+    "duplicated": "Salinan struk dimuat ke generator",
+    "close": "Tutup",
+    "previewTitle": "Pratinjau Struk",
+    "loading": "Memuat riwayat...",
+    "storageErrorTitle": "Riwayat tidak dapat dibaca",
+    "storageError": "Data riwayat di browser rusak atau tidak kompatibel. Salinan cadangan data mentah dibuat jika penyimpanan browser mengizinkan.",
+    "saveError": "Riwayat tidak dapat disimpan di browser.",
+    "clearError": "Riwayat tidak dapat dibersihkan.",
+    "clearDamagedHistory": "Bersihkan Riwayat Rusak",
+    "unnamedStore": "Toko tanpa nama",
+    "noOrderId": "Tanpa ID pesanan"
   },
   "messages": {
     "exportSuccess": "Struk berhasil diekspor",
-    "exportError": "Gagal mengekspor struk",
+    "exportError": "Gagal memproses struk",
     "saveSuccess": "Struk disimpan ke riwayat",
-    "printSuccess": "Mencetak struk...",
+    "printSuccess": "Struk dikirim ke dialog cetak",
     "copied": "Disalin ke clipboard"
   },
   "receipt": {
@@ -177,7 +199,7 @@
     "pump": "Pompa",
     "stylist": "Stylist",
     "pickup_date": "Tgl Ambil",
-    "tax_svc": "Pajak & Lyanan",
+    "tax_svc": "Pajak & Layanan",
     "total": "Total",
     "amount_due": "Total Tagihan",
     "total_paid": "Total Bayar",

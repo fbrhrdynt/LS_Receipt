@@ -2,23 +2,40 @@
   "nav": {
     "home": "Home",
     "generator": "Generator",
-    "history": "History"
+    "history": "History",
+    "language": "Language",
+    "primaryNavigation": "Primary navigation",
+    "switchToDark": "Use dark mode",
+    "switchToLight": "Use light mode",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "home": {
     "title": "Receipt Generator",
     "author": "by Febro Herdyanto",
-    "subtitle": "Create, customize, and export beautiful thermal receipts instantly with a modern interface and diverse templates.",
-    "cta": "Start Creating Receipt"
+    "utilityLabel": "Browser-based receipt tool",
+    "subtitle": "Enter transaction details, choose a template, then download or print the receipt directly from your browser.",
+    "cta": "Create a Receipt",
+    "historyCta": "View History",
+    "workflow": {
+      "inputTitle": "Enter the transaction",
+      "inputText": "Add store, item, discount, tax, payment, and customer information.",
+      "previewTitle": "Check the result",
+      "previewText": "The preview updates as data changes, including React and Classic template choices.",
+      "outputTitle": "Export or print",
+      "outputText": "Save as JPG, PNG, PDF, or print using the same receipt layout."
+    }
+  },
+  "generator": {
+    "subtitle": "Enter transaction data and check the receipt before exporting it.",
+    "description": "Create, preview, export, and print thermal receipts directly from your browser."
   },
   "footer": {
-    "company": "Receipt Generator",
-    "description": "Professional receipt generation made simple.",
-    "links": {
-      "product": "Product",
-      "company": "Company",
-      "legal": "Legal"
-    },
-    "copyright": "2026 Receipt Generator. All rights reserved."
+    "description": "Create and export transaction receipts directly from your browser.",
+    "product": "Product",
+    "author": "Creator",
+    "portfolio": "febro.id",
+    "copyright": "2026 Receipt Generator by Febro Herdyanto."
   },
   "form": {
     "configuration": "Receipt Configuration",
@@ -58,7 +75,7 @@
     "serviceCharge": "Service Charge (%)",
     "subtotal": "Subtotal",
     "totalDiscount": "Total Discount",
-    "tax": "Tax",
+    "tax": "Tax and Service",
     "grandTotal": "Grand Total",
     "payment": "Payment",
     "paymentMethod": "Payment Method",
@@ -68,18 +85,17 @@
     "unpaid": "Unpaid",
     "footer": "Footer",
     "footerNote": "Footer Note",
-    "randomFooter": "Random Footer",
-    "customFooter": "Custom Footer",
-    "export": "Export",
+    "randomFooter": "Fill Sample",
     "downloadJPG": "Download JPG",
     "downloadPNG": "Download PNG",
     "downloadPDF": "Download PDF",
     "print": "Print",
-    "random": "Random",
-    "show": "Show",
-    "hide": "Hide",
     "reactTemplates": "React Templates",
-    "classicTemplates": "Classic Templates"
+    "classicTemplates": "Classic Templates",
+    "randomStore": "Fill sample store name",
+    "randomOrderId": "Generate order ID",
+    "randomCashier": "Fill sample cashier name",
+    "randomCustomer": "Fill sample customer name"
   },
   "visibility": {
     "title": "Visibility Settings",
@@ -132,27 +148,33 @@
   },
   "history": {
     "title": "Receipt History",
-    "search": "Search receipts...",
-    "filter": "Filter",
-    "dateRange": "Date Range",
-    "paymentStatus": "Payment Status",
-    "amountRange": "Amount Range",
+    "subtitle": "Search, open, duplicate, print, or delete receipts stored in this browser.",
+    "description": "Manage receipt history stored in this browser.",
+    "search": "Search store, order ID, or customer",
     "view": "View",
     "duplicate": "Duplicate",
-    "printAgain": "Print Again",
+    "printAgain": "Print again",
     "delete": "Delete",
-    "noReceipts": "No receipts found",
-    "noReceiptsDescription": "Start generating receipts to see them here.",
-    "deleteConfirm": "Are you sure you want to delete this receipt?",
-    "deleted": "Receipt deleted successfully",
-    "duplicated": "Receipt loaded into generator",
-    "close": "Close"
+    "noReceipts": "No receipts yet",
+    "noReceiptsDescription": "Create a new receipt to add it to this browser's history.",
+    "deleted": "Receipt deleted",
+    "duplicated": "Receipt copy loaded into the generator",
+    "close": "Close",
+    "previewTitle": "Receipt Preview",
+    "loading": "Loading history...",
+    "storageErrorTitle": "History could not be read",
+    "storageError": "The history data in this browser is damaged or incompatible. A backup of the raw value is created when browser storage allows it.",
+    "saveError": "History could not be saved in this browser.",
+    "clearError": "History could not be cleared.",
+    "clearDamagedHistory": "Clear Damaged History",
+    "unnamedStore": "Unnamed store",
+    "noOrderId": "No order ID"
   },
   "messages": {
-    "exportSuccess": "Receipt exported successfully",
-    "exportError": "Failed to export receipt",
+    "exportSuccess": "Receipt exported",
+    "exportError": "Receipt could not be processed",
     "saveSuccess": "Receipt saved to history",
-    "printSuccess": "Printing receipt...",
+    "printSuccess": "Receipt sent to print dialog",
     "copied": "Copied to clipboard"
   },
   "receipt": {

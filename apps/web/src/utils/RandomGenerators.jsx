@@ -1,34 +1,35 @@
 const storeNames = [
-  "Warung Kopi Senja", "Toko Elektronik Jaya", "Boutique Elegan", "Apotek Sehat Sentosa",
-  "Restoran Padang Sederhana", "Kedai Kopi Aroma", "Toko Buku Cerdas", "Laundry Express",
-  "Mini Market Berkah", "Bengkel Motor Jaya", "Salon Cantik", "Toko Roti Manis",
-  "Warung Makan Ibu Haji", "Toko Sepatu Trendy", "Optik Mata Jernih", "Toko Bunga Indah",
-  "Barbershop Modern", "Toko Kue Lezat", "Warung Nasi Goreng", "Toko Handphone Digital"
+  'Toko Contoh 01',
+  'Kedai Demo 02',
+  'Warung Contoh 03',
+  'Laundry Demo 04',
+  'Cafe Contoh 05',
+  'Toko Demo 06',
 ];
 
 const customerNames = [
-  "Siti Nurhaliza", "Budi Santoso", "Maya Chen", "Andi Wijaya", "Dewi Lestari",
-  "Rudi Hartono", "Ayu Ting Ting", "Bambang Pamungkas", "Rina Susanti", "Agus Salim",
-  "Fitri Handayani", "Dedi Mulyadi", "Sari Rahayu", "Hendra Gunawan", "Lina Marlina",
-  "Yudi Pratama", "Novi Amelia", "Eko Prasetyo", "Dian Sastro", "Rizki Ramadhan"
+  'Pelanggan 001',
+  'Pelanggan 002',
+  'Pelanggan 003',
+  'Pelanggan 004',
+  'Pelanggan 005',
+  'Pelanggan 006',
 ];
 
 const cashierNames = [
-  "Ani", "Budi", "Citra", "Doni", "Eka", "Fani", "Gita", "Hadi", "Indah", "Joko",
-  "Kartika", "Luki", "Mira", "Nanda", "Oki", "Putri", "Qori", "Rini", "Sinta", "Tono"
+  'Kasir A',
+  'Kasir B',
+  'Kasir C',
+  'Kasir D',
+  'Kasir E',
+  'Kasir F',
 ];
 
 const footerMessages = [
-  "Terima kasih atas kunjungan Anda",
-  "Selamat berbelanja kembali",
-  "Kepuasan Anda adalah prioritas kami",
-  "Barang yang sudah dibeli tidak dapat dikembalikan",
-  "Simpan struk ini sebagai bukti pembayaran",
-  "Hubungi kami untuk pertanyaan lebih lanjut",
-  "Ikuti kami di media sosial untuk promo menarik",
-  "Dapatkan diskon 10% untuk pembelian berikutnya",
-  "Terima kasih telah mempercayai kami",
-  "Kami tunggu kunjungan Anda kembali"
+  'Terima kasih atas kunjungan Anda.',
+  'Simpan struk ini sebagai bukti transaksi.',
+  'Terima kasih sudah berbelanja.',
+  'Sampai jumpa pada kunjungan berikutnya.',
 ];
 
 export function generateRandomStoreName() {

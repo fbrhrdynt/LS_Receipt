@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, Globe, Receipt } from 'lucide-react';
+import { Globe, Menu, Moon, Receipt, Sun, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -16,58 +16,51 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const { language, changeLanguage, t } = useLanguage();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
+  const navItems = [
+    { to: '/', label: t('nav.home') },
+    { to: '/generator', label: t('nav.generator') },
+    { to: '/history', label: t('nav.history') },
+  ];
+
+  const navClass = (path) =>
+    `text-sm font-medium border-b-2 py-1 transition-colors ${
+      isActive(path)
+        ? 'border-primary text-foreground'
+        : 'border-transparent text-muted-foreground hover:text-foreground'
+    }`;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/20 dark:border-white/10 glass-panel">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2 transition-all duration-200 hover:opacity-80">
-              <Receipt className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold tracking-tight hidden sm:inline-block text-balance">Receipt Generator <span className="text-sm font-medium text-muted-foreground ml-1">by Febro Herdyanto</span></span>
-              <span className="text-lg font-bold tracking-tight sm:hidden">Receipt Generator</span>
+        <div className="flex min-h-16 items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-7">
+            <Link
+              to="/"
+              className="flex min-w-0 items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              <Receipt className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+              <span className="truncate text-base font-bold tracking-tight">
+                Receipt Generator
+              </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                to="/"
-                className={`text-sm font-medium transition-all duration-200 ${
-                  isActive('/') 
-                    ? 'text-primary border-b-2 border-primary pb-1' 
-                    : 'text-foreground/70 hover:text-foreground'
-                }`}
-              >
-                {t('nav.home')}
-              </Link>
-              <Link
-                to="/generator"
-                className={`text-sm font-medium transition-all duration-200 ${
-                  isActive('/generator') 
-                    ? 'text-primary border-b-2 border-primary pb-1' 
-                    : 'text-foreground/70 hover:text-foreground'
-                }`}
-              >
-                {t('nav.generator')}
-              </Link>
-              <Link
-                to="/history"
-                className={`text-sm font-medium transition-all duration-200 ${
-                  isActive('/history') 
-                    ? 'text-primary border-b-2 border-primary pb-1' 
-                    : 'text-foreground/70 hover:text-foreground'
-                }`}
-              >
-                {t('nav.history')}
-              </Link>
+            <nav className="hidden items-center gap-5 md:flex" aria-label={t('nav.primaryNavigation')}>
+              {navItems.map((item) => (
+                <Link key={item.to} to={item.to} className={navClass(item.to)}>
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Select value={language} onValueChange={changeLanguage}>
-              <SelectTrigger className="w-[110px] h-9 bg-transparent border-white/20 dark:border-white/10">
-                <Globe className="h-4 w-4 mr-2" />
+              <SelectTrigger className="hidden w-[118px] sm:flex" aria-label={t('nav.language')}>
+                <Globe className="mr-2 h-4 w-4" aria-hidden="true" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -80,17 +73,62 @@ export default function Header() {
               variant="ghost"
               size="icon"
               onClick={toggleTheme}
-              className="h-9 w-9 transition-all duration-200"
-              aria-label="Toggle theme"
+              aria-label={theme === 'light' ? t('nav.switchToDark') : t('nav.switchToLight')}
             >
               {theme === 'light' ? (
-                <Moon className="h-4 w-4" />
+                <Moon className="h-4 w-4" aria-hidden="true" />
               ) : (
-                <Sun className="h-4 w-4" />
+                <Sun className="h-4 w-4" aria-hidden="true" />
               )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+              aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+            >
+              {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
             </Button>
           </div>
         </div>
+
+        {menuOpen && (
+          <div id="mobile-navigation" className="border-t border-border py-3 md:hidden">
+            <nav className="grid gap-1" aria-label={t('nav.primaryNavigation')}>
+              {navItems.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex min-h-11 items-center rounded-md px-3 text-sm font-medium ${
+                    isActive(item.to)
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-foreground hover:bg-muted'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-3 sm:hidden">
+              <Select value={language} onValueChange={changeLanguage}>
+                <SelectTrigger aria-label={t('nav.language')}>
+                  <Globe className="mr-2 h-4 w-4" aria-hidden="true" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="id">Bahasa</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

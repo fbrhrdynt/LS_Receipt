@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Trash2, Sparkles, Settings, Store } from 'lucide-react';
+import { Plus, RefreshCw, Store, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,686 +15,601 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { CURRENCY_CONFIG } from '@/utils/CurrencySystem';
-import { REACT_RECEIPT_TEMPLATES, CLASSIC_RECEIPT_TEMPLATES } from '@/templates/ReceiptTemplateRegistry';
+import { CURRENCY_CONFIG, formatCurrency } from '@/utils/CurrencySystem';
 import {
-  generateRandomStoreName,
-  generateRandomCustomerName,
+  CLASSIC_RECEIPT_TEMPLATES,
+  REACT_RECEIPT_TEMPLATES,
+} from '@/templates/ReceiptTemplateRegistry';
+import {
   generateRandomCashierName,
+  generateRandomCustomerName,
   generateRandomFooter,
-  generateRandomOrderId
+  generateRandomOrderId,
+  generateRandomStoreName,
 } from '@/utils/RandomGenerators';
+
+function Section({ title, children }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">{children}</CardContent>
+    </Card>
+  );
+}
 
 export default function ReceiptForm({ formData, setFormData }) {
   const { t } = useLanguage();
 
   const updateField = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((current) => ({ ...current, [field]: value }));
   };
 
   const updateVisibility = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      visibility: { ...prev.visibility, [field]: value }
+    setFormData((current) => ({
+      ...current,
+      visibility: { ...current.visibility, [field]: value },
     }));
   };
 
   const updateItem = (index, field, value) => {
-    const newItems = [...formData.items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    
-    if (field === 'quantity' || field === 'unitPrice' || field === 'discount') {
-      const qty = parseFloat(newItems[index].quantity) || 0;
-      const price = parseFloat(newItems[index].unitPrice) || 0;
-      const discount = parseFloat(newItems[index].discount) || 0;
-      newItems[index].total = (qty * price) - discount;
+    const nextItems = [...formData.items];
+    const nextItem = { ...nextItems[index], [field]: value };
+
+    if (['quantity', 'unitPrice', 'discount'].includes(field)) {
+      const quantity = Number(nextItem.quantity) || 0;
+      const price = Number(nextItem.unitPrice) || 0;
+      const discount = Number(nextItem.discount) || 0;
+      nextItem.total = Math.max(0, quantity * price - discount);
     }
-    
-    setFormData(prev => ({ ...prev, items: newItems }));
+
+    nextItems[index] = nextItem;
+    updateField('items', nextItems);
   };
 
   const addItem = () => {
-    setFormData(prev => ({
-      ...prev,
-      items: [...prev.items, { name: '', quantity: 1, unitPrice: 0, discount: 0, total: 0 }]
-    }));
+    updateField('items', [
+      ...formData.items,
+      { name: '', quantity: 1, unitPrice: 0, discount: 0, total: 0 },
+    ]);
   };
 
   const removeItem = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      items: prev.items.filter((_, i) => i !== index)
-    }));
+    updateField(
+      'items',
+      formData.items.filter((_, itemIndex) => itemIndex !== index)
+    );
   };
 
-  const calculateSubtotal = () => {
-    return formData.items.reduce((sum, item) => sum + (item.total || 0), 0);
-  };
+  const subtotal = formData.items.reduce(
+    (sum, item) => sum + (Number(item.total) || 0),
+    0
+  );
 
-  const calculateDiscount = () => {
-    const subtotal = calculateSubtotal();
-    if (formData.discountType === 'percentage') {
-      return (subtotal * parseFloat(formData.discountValue || 0)) / 100;
-    }
-    return parseFloat(formData.discountValue || 0);
-  };
+  const globalDiscount =
+    formData.discountType === 'percentage'
+      ? (subtotal * (Number(formData.discountValue) || 0)) / 100
+      : Number(formData.discountValue) || 0;
 
-  const calculateTax = () => {
-    const subtotal = calculateSubtotal();
-    const discount = calculateDiscount();
-    const afterDiscount = subtotal - discount;
-    const vat = (afterDiscount * parseFloat(formData.vat || 0)) / 100;
-    const service = (afterDiscount * parseFloat(formData.serviceCharge || 0)) / 100;
-    return vat + service;
-  };
+  const afterDiscount = Math.max(0, subtotal - globalDiscount);
+  const vatAmount = afterDiscount * ((Number(formData.vat) || 0) / 100);
+  const serviceAmount =
+    afterDiscount * ((Number(formData.serviceCharge) || 0) / 100);
+  const grandTotal = afterDiscount + vatAmount + serviceAmount;
+  const change = Math.max(0, (Number(formData.amountPaid) || 0) - grandTotal);
 
-  const calculateGrandTotal = () => {
-    const subtotal = calculateSubtotal();
-    const discount = calculateDiscount();
-    const tax = calculateTax();
-    return subtotal - discount + tax;
-  };
-
-  const calculateChange = () => {
-    const grandTotal = calculateGrandTotal();
-    const paid = parseFloat(formData.amountPaid || 0);
-    return Math.max(0, paid - grandTotal);
-  };
+  const randomButton = (label, action) => (
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      onClick={action}
+      aria-label={label}
+      title={label}
+      className="shrink-0"
+    >
+      <RefreshCw aria-hidden="true" />
+    </Button>
+  );
 
   return (
     <div className="space-y-6">
-      {/* Template Selector Section */}
-      <Card className="border-primary/20 shadow-md">
-        <CardHeader className="bg-primary/5 pb-4 border-b border-primary/10">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Store className="h-5 w-5 text-primary" />
+      <Card>
+        <CardHeader className="border-b border-border">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Store className="h-5 w-5 text-primary" aria-hidden="true" />
             {t('form.selectTemplate')}
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
-          <div className="space-y-7">
-            <section>
-              <div className="mb-3">
-                <Label className="text-sm font-semibold">{t('form.reactTemplates')}</Label>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                {REACT_RECEIPT_TEMPLATES.map((tpl, idx) => (
-                  <button
-                    key={tpl.id}
-                    type="button"
-                    aria-pressed={formData.template === tpl.id}
-                    onClick={() => updateField('template', tpl.id)}
-                    className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all duration-200 text-center ${
-                      formData.template === tpl.id
-                        ? 'border-primary ring-1 ring-primary bg-primary/10 shadow-sm'
-                        : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                    }`}
-                  >
-                    <div className={`text-lg font-black mb-1 ${formData.template === tpl.id ? 'text-primary' : 'text-muted-foreground'}`}>
-                      {idx + 1}
-                    </div>
-                    <div className="text-xs font-semibold leading-tight line-clamp-2">
-                      {t(`templates.${tpl.id}`)}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className="pt-6 border-t border-border">
-              <div className="mb-3">
-                <Label className="text-sm font-semibold">{t('form.classicTemplates')}</Label>
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3">
-                {CLASSIC_RECEIPT_TEMPLATES.map((tpl, idx) => (
-                  <button
-                    key={tpl.id}
-                    type="button"
-                    aria-pressed={formData.template === tpl.id}
-                    onClick={() => updateField('template', tpl.id)}
-                    className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all duration-200 text-center ${
-                      formData.template === tpl.id
-                        ? 'border-primary ring-1 ring-primary bg-primary/10 shadow-sm'
-                        : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                    }`}
-                  >
-                    <div className={`text-lg font-black mb-1 ${formData.template === tpl.id ? 'text-primary' : 'text-muted-foreground'}`}>
-                      {idx + 1}
-                    </div>
-                    <div className="text-[11px] font-semibold leading-tight">
-                      {tpl.name}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </section>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="bg-muted/50 pb-4 border-b">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            {t('form.configuration')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6 space-y-6">
-          <div className="space-y-2">
-            <Label>{t('form.currency')}</Label>
-            <Select
-              value={formData.currency}
-              onValueChange={(value) => updateField('currency', value)}
-            >
-              <SelectTrigger className="w-full sm:max-w-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(CURRENCY_CONFIG).map((code) => (
-                  <SelectItem key={code} value={code}>
-                    {t(`currencies.${code}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-3">
-            <Label className="text-sm font-semibold">{t('visibility.title')}</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-muted/30 p-4 rounded-lg">
-              {Object.entries({
-                showStoreName: 'storeName',
-                showAddress: 'address',
-                showCustomer: 'customer',
-                showCashier: 'cashier',
-                showTax: 'tax',
-                showDiscount: 'discount',
-                showFooterNote: 'footerNote',
-                showPaymentMethod: 'paymentMethod',
-                showWatermark: 'watermark'
-              }).map(([key, labelKey]) => (
-                <div key={key} className="flex items-center justify-between space-x-2">
-                  <Label htmlFor={key} className="text-sm cursor-pointer font-normal">
-                    {t(`visibility.${labelKey}`)}
-                  </Label>
-                  <Switch
-                    id={key}
-                    checked={formData.visibility[key]}
-                    onCheckedChange={(checked) => updateVisibility(key, checked)}
-                  />
-                </div>
+        <CardContent className="space-y-7 pt-5 sm:pt-6">
+          <section>
+            <h2 className="mb-3 text-sm font-semibold">{t('form.reactTemplates')}</h2>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">
+              {REACT_RECEIPT_TEMPLATES.map((template, index) => (
+                <button
+                  key={template.id}
+                  type="button"
+                  aria-pressed={formData.template === template.id}
+                  onClick={() => updateField('template', template.id)}
+                  className={`min-h-16 rounded-md border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                    formData.template === template.id
+                      ? 'border-primary bg-accent text-accent-foreground'
+                      : 'border-border bg-background hover:bg-muted'
+                  }`}
+                >
+                  <span className="block text-xs text-muted-foreground">{index + 1}</span>
+                  <span className="mt-1 block font-medium leading-tight">
+                    {t(`templates.${template.id}`)}
+                  </span>
+                </button>
               ))}
             </div>
-          </div>
+          </section>
+
+          <section className="border-t border-border pt-6">
+            <h2 className="mb-3 text-sm font-semibold">{t('form.classicTemplates')}</h2>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-7">
+              {CLASSIC_RECEIPT_TEMPLATES.map((template, index) => (
+                <button
+                  key={template.id}
+                  type="button"
+                  aria-pressed={formData.template === template.id}
+                  onClick={() => updateField('template', template.id)}
+                  className={`min-h-14 rounded-md border px-2 py-2 text-center text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                    formData.template === template.id
+                      ? 'border-primary bg-accent text-accent-foreground'
+                      : 'border-border bg-background hover:bg-muted'
+                  }`}
+                >
+                  <span className="block text-[11px] text-muted-foreground">{index + 1}</span>
+                  <span className="font-medium">{template.name}</span>
+                </button>
+              ))}
+            </div>
+          </section>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('form.storeInfo')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="storeName">{t('form.storeName')}</Label>
-            <div className="flex gap-2">
-              <Input
-                id="storeName"
-                value={formData.storeName}
-                onChange={(e) => updateField('storeName', e.target.value)}
-                className="text-foreground"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => updateField('storeName', generateRandomStoreName())}
-                className="shrink-0"
-              >
-                <Sparkles className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+      <Section title={t('form.configuration')}>
+        <div className="space-y-2">
+          <Label>{t('form.currency')}</Label>
+          <Select value={formData.currency} onValueChange={(value) => updateField('currency', value)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(CURRENCY_CONFIG).map((code) => (
+                <SelectItem key={code} value={code}>
+                  {t(`currencies.${code}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </Section>
 
-          <div className="space-y-2">
-            <Label htmlFor="address">{t('form.address')}</Label>
+      <Section title={t('form.storeInfo')}>
+        <div className="space-y-2">
+          <Label htmlFor="storeName">{t('form.storeName')}</Label>
+          <div className="flex gap-2">
             <Input
-              id="address"
-              value={formData.address}
-              onChange={(e) => updateField('address', e.target.value)}
-              className="text-foreground"
+              id="storeName"
+              value={formData.storeName}
+              onChange={(event) => updateField('storeName', event.target.value)}
+            />
+            {randomButton(t('form.randomStore'), () =>
+              updateField('storeName', generateRandomStoreName())
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="address">{t('form.address')}</Label>
+          <Input
+            id="address"
+            value={formData.address}
+            onChange={(event) => updateField('address', event.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="phone">{t('form.phone')}</Label>
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={(event) => updateField('phone', event.target.value)}
             />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone">{t('form.phone')}</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => updateField('phone', e.target.value)}
-                className="text-foreground"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">{t('form.email')}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => updateField('email', e.target.value)}
-                className="text-foreground"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">{t('form.email')}</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(event) => updateField('email', event.target.value)}
+            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('form.orderInfo')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="orderId">{t('form.orderId')}</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="orderId"
-                  value={formData.orderId}
-                  onChange={(e) => updateField('orderId', e.target.value)}
-                  className="text-foreground"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => updateField('orderId', generateRandomOrderId())}
-                  className="shrink-0"
-                >
-                  <Sparkles className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="invoiceNumber">{t('form.invoiceNumber')}</Label>
-              <Input
-                id="invoiceNumber"
-                value={formData.invoiceNumber}
-                onChange={(e) => updateField('invoiceNumber', e.target.value)}
-                className="text-foreground"
-              />
-            </div>
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="website">{t('form.website')}</Label>
+          <Input
+            id="website"
+            value={formData.website}
+            onChange={(event) => updateField('website', event.target.value)}
+            placeholder="https://example.com"
+          />
+        </div>
+      </Section>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="date">{t('form.date')}</Label>
+      <Section title={t('form.orderInfo')}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="orderId">{t('form.orderId')}</Label>
+            <div className="flex gap-2">
               <Input
-                id="date"
-                type="date"
-                value={formData.date}
-                onChange={(e) => updateField('date', e.target.value)}
-                className="text-foreground"
+                id="orderId"
+                value={formData.orderId}
+                onChange={(event) => updateField('orderId', event.target.value)}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="time">{t('form.time')}</Label>
-              <Input
-                id="time"
-                type="time"
-                value={formData.time}
-                onChange={(e) => updateField('time', e.target.value)}
-                className="text-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="cashier">{t('form.cashier')}</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="cashier"
-                  value={formData.cashier}
-                  onChange={(e) => updateField('cashier', e.target.value)}
-                  className="text-foreground"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => updateField('cashier', generateRandomCashierName())}
-                  className="shrink-0"
-                >
-                  <Sparkles className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="customer">{t('form.customer')}</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="customer"
-                  value={formData.customer}
-                  onChange={(e) => updateField('customer', e.target.value)}
-                  className="text-foreground"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => updateField('customer', generateRandomCustomerName())}
-                  className="shrink-0"
-                >
-                  <Sparkles className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Business Specific Fields */}
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
-            <div className="space-y-2">
-              <Label htmlFor="tableNumber">{t('form.tableNumber')}</Label>
-              <Input
-                id="tableNumber"
-                value={formData.tableNumber || ''}
-                onChange={(e) => updateField('tableNumber', e.target.value)}
-                className="text-foreground"
-                placeholder="e.g. 12"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pumpNumber">{t('form.pumpNumber')}</Label>
-              <Input
-                id="pumpNumber"
-                value={formData.pumpNumber || ''}
-                onChange={(e) => updateField('pumpNumber', e.target.value)}
-                className="text-foreground"
-                placeholder="e.g. 3"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="stylistName">{t('form.stylistName')}</Label>
-              <Input
-                id="stylistName"
-                value={formData.stylistName || ''}
-                onChange={(e) => updateField('stylistName', e.target.value)}
-                className="text-foreground"
-                placeholder="e.g. Alex"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pickupDate">{t('form.pickupDate')}</Label>
-              <Input
-                id="pickupDate"
-                type="date"
-                value={formData.pickupDate || ''}
-                onChange={(e) => updateField('pickupDate', e.target.value)}
-                className="text-foreground"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('form.items')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {formData.items.map((item, index) => (
-            <div key={index} className="p-4 border border-border rounded-lg space-y-3 bg-muted/10">
-              <div className="space-y-2">
-                <Label>{t('form.itemName')}</Label>
-                <Input
-                  value={item.name}
-                  onChange={(e) => updateItem(index, 'name', e.target.value)}
-                  className="text-foreground"
-                />
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                <div className="space-y-2">
-                  <Label>{t('form.qty')}</Label>
-                  <Input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                    min="1"
-                    className="text-foreground"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('form.unitPrice')}</Label>
-                  <Input
-                    type="number"
-                    value={item.unitPrice}
-                    onChange={(e) => updateItem(index, 'unitPrice', e.target.value)}
-                    min="0"
-                    step="0.01"
-                    className="text-foreground"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('form.discount')}</Label>
-                  <Input
-                    type="number"
-                    value={item.discount}
-                    onChange={(e) => updateItem(index, 'discount', e.target.value)}
-                    min="0"
-                    step="0.01"
-                    className="text-foreground"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('form.total')}</Label>
-                  <Input
-                    type="number"
-                    value={item.total.toFixed(2)}
-                    readOnly
-                    className="bg-muted text-foreground"
-                  />
-                </div>
-              </div>
-              {formData.items.length > 1 && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeItem(index)}
-                  className="w-full"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  {t('form.removeItem')}
-                </Button>
+              {randomButton(t('form.randomOrderId'), () =>
+                updateField('orderId', generateRandomOrderId())
               )}
             </div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={addItem}
-            className="w-full"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            {t('form.addItem')}
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('form.pricing')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{t('form.discountType')}</Label>
-              <Select
-                value={formData.discountType}
-                onValueChange={(value) => updateField('discountType', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="percentage">{t('form.percentage')}</SelectItem>
-                  <SelectItem value="fixed">{t('form.fixedAmount')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>{t('form.discount')}</Label>
-              <Input
-                type="number"
-                value={formData.discountValue}
-                onChange={(e) => updateField('discountValue', e.target.value)}
-                min="0"
-                step="0.01"
-                className="text-foreground"
-              />
-            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{t('form.vat')}</Label>
-              <Input
-                type="number"
-                value={formData.vat}
-                onChange={(e) => updateField('vat', e.target.value)}
-                min="0"
-                max="100"
-                step="0.1"
-                className="text-foreground"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t('form.serviceCharge')}</Label>
-              <Input
-                type="number"
-                value={formData.serviceCharge}
-                onChange={(e) => updateField('serviceCharge', e.target.value)}
-                min="0"
-                max="100"
-                step="0.1"
-                className="text-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2 pt-4 border-t border-border">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{t('form.subtotal')}</span>
-              <span className="font-medium">{calculateSubtotal().toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{t('form.totalDiscount')}</span>
-              <span className="font-medium text-destructive">-{calculateDiscount().toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{t('form.tax')}</span>
-              <span className="font-medium">{calculateTax().toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-lg font-bold pt-2 border-t border-border">
-              <span>{t('form.grandTotal')}</span>
-              <span>{calculateGrandTotal().toFixed(2)}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('form.payment')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>{t('form.paymentMethod')}</Label>
+            <Label htmlFor="invoiceNumber">{t('form.invoiceNumber')}</Label>
+            <Input
+              id="invoiceNumber"
+              value={formData.invoiceNumber}
+              onChange={(event) => updateField('invoiceNumber', event.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="date">{t('form.date')}</Label>
+            <Input
+              id="date"
+              type="date"
+              value={formData.date}
+              onChange={(event) => updateField('date', event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="time">{t('form.time')}</Label>
+            <Input
+              id="time"
+              type="time"
+              value={formData.time}
+              onChange={(event) => updateField('time', event.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="cashier">{t('form.cashier')}</Label>
+            <div className="flex gap-2">
+              <Input
+                id="cashier"
+                value={formData.cashier}
+                onChange={(event) => updateField('cashier', event.target.value)}
+              />
+              {randomButton(t('form.randomCashier'), () =>
+                updateField('cashier', generateRandomCashierName())
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="customer">{t('form.customer')}</Label>
+            <div className="flex gap-2">
+              <Input
+                id="customer"
+                value={formData.customer}
+                onChange={(event) => updateField('customer', event.target.value)}
+              />
+              {randomButton(t('form.randomCustomer'), () =>
+                updateField('customer', generateRandomCustomerName())
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 border-t border-border pt-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="tableNumber">{t('form.tableNumber')}</Label>
+            <Input
+              id="tableNumber"
+              value={formData.tableNumber || ''}
+              onChange={(event) => updateField('tableNumber', event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pumpNumber">{t('form.pumpNumber')}</Label>
+            <Input
+              id="pumpNumber"
+              value={formData.pumpNumber || ''}
+              onChange={(event) => updateField('pumpNumber', event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="stylistName">{t('form.stylistName')}</Label>
+            <Input
+              id="stylistName"
+              value={formData.stylistName || ''}
+              onChange={(event) => updateField('stylistName', event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pickupDate">{t('form.pickupDate')}</Label>
+            <Input
+              id="pickupDate"
+              type="date"
+              value={formData.pickupDate || ''}
+              onChange={(event) => updateField('pickupDate', event.target.value)}
+            />
+          </div>
+        </div>
+      </Section>
+
+      <Section title={t('form.items')}>
+        {formData.items.map((item, index) => (
+          <div key={index} className="rounded-md border border-border p-4">
+            <div className="space-y-2">
+              <Label htmlFor={`item-name-${index}`}>{t('form.itemName')}</Label>
+              <Input
+                id={`item-name-${index}`}
+                value={item.name}
+                onChange={(event) => updateItem(index, 'name', event.target.value)}
+              />
+            </div>
+
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="space-y-2">
+                <Label htmlFor={`item-qty-${index}`}>{t('form.qty')}</Label>
+                <Input
+                  id={`item-qty-${index}`}
+                  type="number"
+                  value={item.quantity}
+                  min="1"
+                  onChange={(event) => updateItem(index, 'quantity', event.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`item-price-${index}`}>{t('form.unitPrice')}</Label>
+                <Input
+                  id={`item-price-${index}`}
+                  type="number"
+                  value={item.unitPrice}
+                  min="0"
+                  step="0.01"
+                  onChange={(event) => updateItem(index, 'unitPrice', event.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`item-discount-${index}`}>{t('form.discount')}</Label>
+                <Input
+                  id={`item-discount-${index}`}
+                  type="number"
+                  value={item.discount}
+                  min="0"
+                  step="0.01"
+                  onChange={(event) => updateItem(index, 'discount', event.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('form.total')}</Label>
+                <div className="flex min-h-11 items-center rounded-md border border-input bg-muted px-3 text-sm">
+                  {formatCurrency(item.total, formData.currency)}
+                </div>
+              </div>
+            </div>
+
+            {formData.items.length > 1 && (
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                className="mt-3"
+                onClick={() => removeItem(index)}
+              >
+                <Trash2 aria-hidden="true" />
+                {t('form.removeItem')}
+              </Button>
+            )}
+          </div>
+        ))}
+
+        <Button type="button" variant="outline" onClick={addItem}>
+          <Plus aria-hidden="true" />
+          {t('form.addItem')}
+        </Button>
+      </Section>
+
+      <Section title={t('form.pricing')}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label>{t('form.discountType')}</Label>
             <Select
-              value={formData.paymentMethod}
-              onValueChange={(value) => updateField('paymentMethod', value)}
+              value={formData.discountType}
+              onValueChange={(value) => updateField('discountType', value)}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="cash">{t('paymentMethods.cash')}</SelectItem>
-                <SelectItem value="debitCard">{t('paymentMethods.debitCard')}</SelectItem>
-                <SelectItem value="creditCard">{t('paymentMethods.creditCard')}</SelectItem>
-                <SelectItem value="qris">{t('paymentMethods.qris')}</SelectItem>
-                <SelectItem value="gopay">{t('paymentMethods.gopay')}</SelectItem>
-                <SelectItem value="ovo">{t('paymentMethods.ovo')}</SelectItem>
-                <SelectItem value="dana">{t('paymentMethods.dana')}</SelectItem>
-                <SelectItem value="shopeepay">{t('paymentMethods.shopeepay')}</SelectItem>
-                <SelectItem value="bankTransfer">{t('paymentMethods.bankTransfer')}</SelectItem>
+                <SelectItem value="percentage">{t('form.percentage')}</SelectItem>
+                <SelectItem value="fixed">{t('form.fixedAmount')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{t('form.amountPaid')}</Label>
-              <Input
-                type="number"
-                value={formData.amountPaid}
-                onChange={(e) => updateField('amountPaid', e.target.value)}
-                min="0"
-                step="0.01"
-                className="text-foreground"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t('form.change')}</Label>
-              <Input
-                type="number"
-                value={calculateChange().toFixed(2)}
-                readOnly
-                className="bg-muted text-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="isPaid"
-              checked={formData.isPaid}
-              onCheckedChange={(checked) => updateField('isPaid', checked)}
-            />
-            <Label htmlFor="isPaid" className="cursor-pointer">
-              {formData.isPaid ? t('form.paid') : t('form.unpaid')}
-            </Label>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('form.footer')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>{t('form.footerNote')}</Label>
-            <div className="flex gap-2 mb-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => updateField('footerNote', generateRandomFooter())}
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                {t('form.randomFooter')}
-              </Button>
-            </div>
-            <Textarea
-              value={formData.footerNote}
-              onChange={(e) => updateField('footerNote', e.target.value)}
-              rows={3}
-              className="text-foreground"
+            <Label htmlFor="discountValue">{t('form.discount')}</Label>
+            <Input
+              id="discountValue"
+              type="number"
+              value={formData.discountValue}
+              min="0"
+              step="0.01"
+              onChange={(event) => updateField('discountValue', event.target.value)}
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="vat">{t('form.vat')}</Label>
+            <Input
+              id="vat"
+              type="number"
+              value={formData.vat}
+              min="0"
+              max="100"
+              step="0.1"
+              onChange={(event) => updateField('vat', event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="serviceCharge">{t('form.serviceCharge')}</Label>
+            <Input
+              id="serviceCharge"
+              type="number"
+              value={formData.serviceCharge}
+              min="0"
+              max="100"
+              step="0.1"
+              onChange={(event) => updateField('serviceCharge', event.target.value)}
+            />
+          </div>
+        </div>
+
+        <dl className="space-y-2 border-t border-border pt-4 text-sm">
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted-foreground">{t('form.subtotal')}</dt>
+            <dd className="font-medium">{formatCurrency(subtotal, formData.currency)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted-foreground">{t('form.totalDiscount')}</dt>
+            <dd className="font-medium">-{formatCurrency(globalDiscount, formData.currency)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted-foreground">{t('form.tax')}</dt>
+            <dd className="font-medium">{formatCurrency(vatAmount + serviceAmount, formData.currency)}</dd>
+          </div>
+          <div className="flex justify-between gap-4 border-t border-border pt-2 text-base font-bold">
+            <dt>{t('form.grandTotal')}</dt>
+            <dd>{formatCurrency(grandTotal, formData.currency)}</dd>
+          </div>
+        </dl>
+      </Section>
+
+      <Section title={t('form.payment')}>
+        <div className="space-y-2">
+          <Label>{t('form.paymentMethod')}</Label>
+          <Select
+            value={formData.paymentMethod}
+            onValueChange={(value) => updateField('paymentMethod', value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {['cash', 'debitCard', 'creditCard', 'qris', 'gopay', 'ovo', 'dana', 'shopeepay', 'bankTransfer'].map((method) => (
+                <SelectItem key={method} value={method}>
+                  {t(`paymentMethods.${method}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="amountPaid">{t('form.amountPaid')}</Label>
+            <Input
+              id="amountPaid"
+              type="number"
+              value={formData.amountPaid}
+              min="0"
+              step="0.01"
+              onChange={(event) => updateField('amountPaid', event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{t('form.change')}</Label>
+            <div className="flex min-h-11 items-center rounded-md border border-input bg-muted px-3 text-sm">
+              {formatCurrency(change, formData.currency)}
+            </div>
+          </div>
+        </div>
+
+        <label className="flex min-h-11 cursor-pointer items-center gap-3">
+          <Checkbox
+            id="isPaid"
+            checked={formData.isPaid}
+            onCheckedChange={(checked) => updateField('isPaid', Boolean(checked))}
+          />
+          <span className="text-sm font-medium">
+            {formData.isPaid ? t('form.paid') : t('form.unpaid')}
+          </span>
+        </label>
+      </Section>
+
+      <Section title={t('visibility.title')}>
+        <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+          {[
+            ['showStoreName', 'visibility.storeName'],
+            ['showAddress', 'visibility.address'],
+            ['showCustomer', 'visibility.customer'],
+            ['showCashier', 'visibility.cashier'],
+            ['showTax', 'visibility.tax'],
+            ['showDiscount', 'visibility.discount'],
+            ['showFooterNote', 'visibility.footerNote'],
+            ['showPaymentMethod', 'visibility.paymentMethod'],
+            ['showWatermark', 'visibility.watermark'],
+          ].map(([field, label]) => (
+            <div key={field} className="flex min-h-11 items-center justify-between gap-4">
+              <Label htmlFor={field} className="leading-5">
+                {t(label)}
+              </Label>
+              <Switch
+                id={field}
+                checked={Boolean(formData.visibility?.[field])}
+                onCheckedChange={(checked) => updateVisibility(field, checked)}
+              />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title={t('form.footer')}>
+        <div className="space-y-2">
+          <Label htmlFor="footerNote">{t('form.footerNote')}</Label>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => updateField('footerNote', generateRandomFooter())}
+            >
+              <RefreshCw aria-hidden="true" />
+              {t('form.randomFooter')}
+            </Button>
+          </div>
+          <Textarea
+            id="footerNote"
+            value={formData.footerNote}
+            onChange={(event) => updateField('footerNote', event.target.value)}
+            rows={3}
+          />
+        </div>
+      </Section>
     </div>
   );
 }

@@ -7,29 +7,29 @@ export default function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="border-t border-white/20 dark:border-white/10 glass-panel backdrop-blur-md">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
+    <footer className="border-t border-border bg-background">
+      <div className="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
+        <div className="grid gap-8 md:grid-cols-[1.6fr_1fr_1fr]">
+          <div className="max-w-md">
             <div className="flex items-center gap-2">
-              <Receipt className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold">Receipt Generator</span>
+              <Receipt className="h-5 w-5 text-primary" aria-hidden="true" />
+              <span className="font-bold">Receipt Generator</span>
             </div>
-            <p className="text-sm text-foreground/70 leading-relaxed">
-              Professional receipt generation made simple. By Febro Herdyanto.
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              {t('footer.description')}
             </p>
           </div>
 
           <div>
-            <span className="text-sm font-semibold mb-4 block">Product</span>
-            <ul className="space-y-2">
+            <h2 className="text-sm font-semibold">{t('footer.product')}</h2>
+            <ul className="mt-3 space-y-2">
               <li>
-                <Link to="/generator" className="text-sm text-foreground/70 hover:text-primary transition-all duration-200">
+                <Link className="text-sm text-muted-foreground hover:text-foreground" to="/generator">
                   {t('nav.generator')}
                 </Link>
               </li>
               <li>
-                <Link to="/history" className="text-sm text-foreground/70 hover:text-primary transition-all duration-200">
+                <Link className="text-sm text-muted-foreground hover:text-foreground" to="/history">
                   {t('nav.history')}
                 </Link>
               </li>
@@ -37,27 +37,24 @@ export default function Footer() {
           </div>
 
           <div>
-            <span className="text-sm font-semibold mb-4 block">Author</span>
-            <ul className="space-y-2">
+            <h2 className="text-sm font-semibold">{t('footer.author')}</h2>
+            <ul className="mt-3 space-y-2">
+              <li className="text-sm text-muted-foreground">Febro Herdyanto</li>
               <li>
-                <a href="https://linkedin.com/in/FebroHerdyanto" className="text-sm text-foreground/70 hover:text-primary transition-all duration-200">
-                  Febro Herdyanto
-                </a>
-              </li>
-              <li>
-                <a href="https://febroherdyanto.web.id/" className="text-sm text-foreground/70 hover:text-primary transition-all duration-200">
-                  Portfolio
+                <a
+                  href="https://febro.id/"
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {t('footer.portfolio')}
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/20 dark:border-white/10">
-          <p className="text-sm text-foreground/60 text-center">
-            2026 Receipt Generator by Febro Herdyanto. All rights reserved.
-          </p>
-        </div>
+        <p className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground">
+          {t('footer.copyright')}
+        </p>
       </div>
     </footer>
   );
