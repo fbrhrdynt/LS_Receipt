@@ -1,58 +1,150 @@
-const storeNames = [
-  'Toko Contoh 01',
-  'Kedai Demo 02',
-  'Warung Contoh 03',
-  'Laundry Demo 04',
-  'Cafe Contoh 05',
-  'Toko Demo 06',
+const storePrefixes = [
+  'Warung',
+  'Kedai',
+  'Toko',
+  'Cafe',
+  'Laundry',
+  'Bengkel',
+  'Apotek',
+  'Bakery',
+  'Barbershop',
+  'Minimarket',
 ];
 
-const customerNames = [
-  'Pelanggan 001',
-  'Pelanggan 002',
-  'Pelanggan 003',
-  'Pelanggan 004',
-  'Pelanggan 005',
-  'Pelanggan 006',
+const storeNames = [
+  'Sumber Rejeki',
+  'Maju Jaya',
+  'Berkah Abadi',
+  'Pagi Cerah',
+  'Rasa Nusantara',
+  'Kopi Kita',
+  'Sejahtera',
+  'Mitra Utama',
+  'Cahaya Baru',
+  'Harapan Jaya',
+  'Nusantara',
+  'Teras Kita',
+  'Bintang Timur',
+  'Mekar Sari',
+  'Prima',
+  'Sentosa',
+  'Sahabat',
+  'Mandiri',
+  'Karya Jaya',
+  'Cipta Rasa',
+];
+
+const firstNames = [
+  'Andi',
+  'Aulia',
+  'Bagas',
+  'Bima',
+  'Dewi',
+  'Dimas',
+  'Fajar',
+  'Farhan',
+  'Fitri',
+  'Hendra',
+  'Intan',
+  'Kevin',
+  'Nadia',
+  'Naufal',
+  'Putri',
+  'Raka',
+  'Rani',
+  'Reza',
+  'Rizky',
+  'Salsa',
+  'Sari',
+  'Siti',
+  'Taufik',
+  'Vina',
+  'Wahyu',
+];
+
+const lastNames = [
+  'Aditya',
+  'Ananda',
+  'Hidayat',
+  'Kurniawan',
+  'Lestari',
+  'Maulana',
+  'Nugraha',
+  'Permana',
+  'Pratama',
+  'Putra',
+  'Putri',
+  'Ramadhan',
+  'Santoso',
+  'Saputra',
+  'Sari',
+  'Setiawan',
+  'Wijaya',
+  'Yulianto',
 ];
 
 const cashierNames = [
-  'Kasir A',
-  'Kasir B',
-  'Kasir C',
-  'Kasir D',
-  'Kasir E',
-  'Kasir F',
+  'Alya',
+  'Andi',
+  'Dian',
+  'Dina',
+  'Fajar',
+  'Farah',
+  'Intan',
+  'Nadia',
+  'Raka',
+  'Rani',
+  'Reza',
+  'Rizky',
+  'Salsa',
+  'Sari',
+  'Taufik',
+  'Vina',
 ];
 
 const footerMessages = [
   'Terima kasih atas kunjungan Anda.',
+  'Terima kasih sudah berbelanja bersama kami.',
   'Simpan struk ini sebagai bukti transaksi.',
-  'Terima kasih sudah berbelanja.',
-  'Sampai jumpa pada kunjungan berikutnya.',
+  'Kami tunggu kunjungan Anda berikutnya.',
+  'Semoga hari Anda menyenangkan.',
+  'Terima kasih dan sampai jumpa kembali.',
 ];
 
+function pick(values) {
+  return values[Math.floor(Math.random() * values.length)];
+}
+
+function randomDigits(length) {
+  const max = 10 ** length;
+  return Math.floor(Math.random() * max).toString().padStart(length, '0');
+}
+
 export function generateRandomStoreName() {
-  return storeNames[Math.floor(Math.random() * storeNames.length)];
+  return `${pick(storePrefixes)} ${pick(storeNames)}`;
 }
 
 export function generateRandomCustomerName() {
-  return customerNames[Math.floor(Math.random() * customerNames.length)];
+  return `${pick(firstNames)} ${pick(lastNames)}`;
 }
 
 export function generateRandomCashierName() {
-  return cashierNames[Math.floor(Math.random() * cashierNames.length)];
+  return pick(cashierNames);
 }
 
 export function generateRandomFooter() {
-  return footerMessages[Math.floor(Math.random() * footerMessages.length)];
+  return pick(footerMessages);
 }
 
 export function generateRandomOrderId() {
-  const prefix = ['INV', 'ORD', 'RCP', 'TRX'][Math.floor(Math.random() * 4)];
-  const date = new Date();
-  const year = date.getFullYear().toString().slice(-2);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-  return `${prefix}-${year}${month}-${random}`;
+  const prefix = pick(['TRX', 'INV', 'ORD', 'RCP']);
+  const now = new Date();
+
+  const date = [
+    String(now.getFullYear()).slice(-2),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('');
+
+  return `${prefix}-${date}-${randomDigits(4)}`;
 }
