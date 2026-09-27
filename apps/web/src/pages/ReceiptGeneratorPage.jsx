@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ReceiptForm from '@/components/ReceiptForm';
 import ReceiptPreview from '@/components/ReceiptPreview';
+import LocalReceiptGenerator from '@/components/LocalReceiptGenerator';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { exportAsJPG, exportAsPNG, exportAsPDF, printReceipt } from '@/utils/ReceiptExport';
 import { createReceiptId, readReceipts, writeReceipts } from '@/utils/ReceiptStorage';
@@ -122,6 +123,23 @@ export default function ReceiptGeneratorPage() {
     return () => window.clearTimeout(debounceTimer);
   }, [formData, receiptId, t]);
 
+  const handleLocalGenerate = (generatedFormData) => {
+    setReceiptId(createReceiptId());
+    setStorageError('');
+    setFormData((current) => ({
+      ...current,
+      ...generatedFormData,
+      visibility: {
+        ...current.visibility,
+        ...(generatedFormData.visibility || {}),
+      },
+      items:
+        Array.isArray(generatedFormData.items) && generatedFormData.items.length
+          ? generatedFormData.items
+          : current.items,
+    }));
+  };
+
   const exportWithToast = async (action) => {
     try {
       await action();
@@ -218,6 +236,8 @@ export default function ReceiptGeneratorPage() {
               {storageError}
             </div>
           )}
+
+          <LocalReceiptGenerator onGenerate={handleLocalGenerate} />
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
             <div className="order-2 lg:order-1 lg:col-span-7 xl:col-span-8">

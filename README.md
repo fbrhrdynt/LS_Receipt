@@ -22,6 +22,7 @@ Built and maintained by Febro Herdyanto.
 - Search, preview, duplicate, print, and delete history records
 - Responsive layout for desktop and mobile
 - Realistic sample data generators for store names, customer names, cashier names, and order IDs
+- Local natural-language receipt generator with no external AI API
 
 ## Templates
 
@@ -168,6 +169,108 @@ apps/web/src/templates/ReceiptTemplateRegistry.jsx
 apps/web/src/templates/ClassicReceiptTemplates.jsx
 apps/web/src/utils/ReceiptTemplates.jsx
 ```
+
+## Local Smart Generator
+
+The Generator page includes a natural-language section above the normal form.
+
+Example:
+
+```text
+Buatkan nota makan siang di Palembang tanggal 19 September 2026
+dengan jumlah 130500 rupiah pembayaran cash.
+```
+
+Required information:
+
+- city
+- date
+- total payment amount
+- payment method
+
+When all four values are present, generation happens immediately in the browser. There is no API request, no loading state, no external AI service, and no token cost.
+
+The generated draft fills the existing Generator form so the user can review and edit every field before export or printing.
+
+Generated fields include:
+
+- store name
+- city
+- order ID
+- date
+- context-appropriate time
+- cashier
+- customer
+- item names
+- quantities and prices
+- payment method
+- footer note
+- receipt template
+
+Defaults:
+
+```text
+Currency       : IDR
+Tax            : 0%
+Discount       : 0
+Service charge : 0%
+Paid           : yes
+```
+
+The parser recognizes common contexts such as:
+
+```text
+meal / lunch / dinner
+coffee
+fuel / SPBU
+laundry
+barbershop / salon
+electronics
+bakery
+juice
+minimarket
+```
+
+It also recognizes common payment methods including cash, QRIS, debit card, credit card, transfer, GoPay, OVO, DANA, and ShopeePay.
+
+The line item generator always adjusts the last item so the final receipt total exactly matches the amount requested by the user.
+
+### Local Processing
+
+The local generator lives in:
+
+```text
+apps/web/src/utils/LocalReceiptGenerator.js
+apps/web/src/components/LocalReceiptGenerator.jsx
+```
+
+Architecture:
+
+```text
+User instruction
+      |
+      v
+Local parser in browser
+      |
+      +-- city
+      +-- date
+      +-- total amount
+      +-- payment method
+      +-- category and time context
+      |
+      v
+Generated formData
+      |
+      v
+Existing Receipt Generator
+      |
+      v
+Review / Edit / Export / Print
+```
+
+No API key or paid AI account is required.
+
+Generated store and person names are synthetic sample data intended to look natural. They do not represent a verified real transaction, person, or business.
 
 ## Receipt History
 

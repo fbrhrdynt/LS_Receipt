@@ -60,3 +60,15 @@ Icons are used only when they communicate a real action or object, for example r
 Light and dark modes are both supported.
 The application shell follows the selected theme.
 Receipt paper stays white in either theme.
+
+## Local Smart Generator
+
+- The natural-language generator is part of the existing Generator page.
+- It appears above the manual form because it is a shortcut into the same editing workflow.
+- Generation is synchronous and local, so there is no loading treatment.
+- Validation shows only the required information that is missing.
+- Generated data is editable immediately in the existing form.
+- No chatbot bubble, robot icon, glow, gradient, or separate AI visual identity is used.
+
+Reason: this feature accelerates form entry rather than creating a second product or conversation interface.
+

@@ -231,5 +231,22 @@
     "matur_suwun": "Thank You",
     "freshly_baked": "Freshly Baked Everyday",
     "fresh_healthy": "100% Fresh & Healthy"
+  },
+  "smartGenerator": {
+    "title": "Generate a Draft",
+    "description": "Describe the receipt in one sentence. The browser processes it instantly and fills the Generator form below for editing and review.",
+    "promptLabel": "Receipt instruction",
+    "placeholder": "Example: Create a lunch receipt in Palembang dated 19 September 2026 for IDR 130500 paid in cash.",
+    "requiredHint": "Required: city, date, total payment amount, and payment method.",
+    "localHint": "Processed locally with no API or AI usage cost.",
+    "generate": "Generate Draft",
+    "success": "Draft generated. Review and edit the Generator fields below.",
+    "missingTitle": "Missing information",
+    "fields": {
+      "city": "city",
+      "date": "date",
+      "totalAmount": "total payment amount",
+      "paymentMethod": "payment method"
+    }
   }
 }

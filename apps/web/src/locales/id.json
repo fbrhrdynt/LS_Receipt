@@ -231,5 +231,22 @@
     "matur_suwun": "Matur Suwun",
     "freshly_baked": "Dipanggang Segar Setiap Hari",
     "fresh_healthy": "100% Segar & Sehat"
+  },
+  "smartGenerator": {
+    "title": "Buat Draft Otomatis",
+    "description": "Tulis kebutuhan nota dalam satu kalimat. Sistem memprosesnya langsung di browser dan mengisi form Generator di bawah untuk kamu edit dan review.",
+    "promptLabel": "Instruksi nota",
+    "placeholder": "Contoh: Buatkan nota makan siang di Palembang tanggal 19 September 2026 dengan jumlah 130500 rupiah pembayaran cash.",
+    "requiredHint": "Wajib: kota, tanggal, jumlah pembayaran, dan metode pembayaran.",
+    "localHint": "Diproses lokal tanpa API dan tanpa biaya AI.",
+    "generate": "Generate Draft",
+    "success": "Draft sudah dibuat. Silakan review dan edit field Generator di bawah.",
+    "missingTitle": "Informasi yang masih kurang",
+    "fields": {
+      "city": "kota",
+      "date": "tanggal",
+      "totalAmount": "jumlah pembayaran",
+      "paymentMethod": "metode pembayaran"
+    }
   }
 }
