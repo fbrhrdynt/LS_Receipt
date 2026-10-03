@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Globe, Menu, Moon, Receipt, Sun, X } from 'lucide-react';
+import { Globe, HeartHandshake, Menu, Moon, Receipt, Sun, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -69,6 +69,17 @@ export default function Header() {
               </SelectContent>
             </Select>
 
+            <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
+              <a
+                href="https://saweria.co/fbrhrdynt"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <HeartHandshake className="h-4 w-4" aria-hidden="true" />
+                {t('support.button')}
+              </a>
+            </Button>
+
             <Button
               variant="ghost"
               size="icon"
@@ -114,6 +125,16 @@ export default function Header() {
                 </Link>
               ))}
             </nav>
+
+            <a
+              href="https://saweria.co/fbrhrdynt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex min-h-11 items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground hover:bg-muted sm:hidden"
+            >
+              <HeartHandshake className="h-4 w-4 text-primary" aria-hidden="true" />
+              {t('support.mobileLink')}
+            </a>
 
             <div className="mt-3 sm:hidden">
               <Select value={language} onValueChange={changeLanguage}>

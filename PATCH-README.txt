@@ -1,13 +1,13 @@
-LS Receipt Support Patch 005
+LS Receipt Support Patch 006
 
-This ZIP includes all changes from Local Smart Generator Patch 004.
+This ZIP includes everything from Support Patch 005.
 
-New:
-- Site-wide voluntary support notice below the header.
-- Saweria link: https://saweria.co/fbrhrdynt
-- Support button opens in a new tab.
-- Dismiss button hides the notice for the current browser session.
-- Indonesian and English copy.
-- README and DESIGN.md updated.
+Change:
+- The X button only hides the top support banner for the current browser session.
+- A permanent Support button is now available in the header on desktop.
+- A permanent Support link is available in the mobile menu.
+- A permanent Support section is available in the footer.
+- All Support links open https://saweria.co/fbrhrdynt in a new tab.
+- Indonesian and English copy updated.
 
-The notice is intentionally non-blocking and avoids modal/popup donation prompts.
+No API or backend changes are required.

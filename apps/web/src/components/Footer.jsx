@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Receipt } from 'lucide-react';
+import { HeartHandshake, Receipt } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-[1.6fr_1fr_1fr]">
+        <div className="grid gap-8 md:grid-cols-[1.5fr_1fr_1fr_1.1fr]">
           <div className="max-w-md">
             <div className="flex items-center gap-2">
               <Receipt className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -34,6 +34,22 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold">{t('support.footerTitle')}</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              {t('support.footerDescription')}
+            </p>
+            <a
+              href="https://saweria.co/fbrhrdynt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-foreground hover:bg-muted"
+            >
+              <HeartHandshake className="h-4 w-4 text-primary" aria-hidden="true" />
+              {t('support.button')}
+            </a>
           </div>
 
           <div>

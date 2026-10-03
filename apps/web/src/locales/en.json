@@ -254,6 +254,9 @@
     "title": "Receipt Generator stays free.",
     "description": "If this app helps you, you can support its development voluntarily.",
     "button": "Support",
-    "dismiss": "Dismiss support notice"
+    "dismiss": "Dismiss support notice",
+    "mobileLink": "Support Project",
+    "footerTitle": "Support Project",
+    "footerDescription": "Optional support helps with ongoing development and maintenance of Receipt Generator."
   }
 }

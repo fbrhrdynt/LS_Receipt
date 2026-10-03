@@ -254,6 +254,9 @@
     "title": "Receipt Generator tetap gratis.",
     "description": "Jika aplikasi ini membantu, kamu dapat mendukung pengembangannya secara sukarela.",
     "button": "Support",
-    "dismiss": "Tutup pemberitahuan dukungan"
+    "dismiss": "Tutup pemberitahuan dukungan",
+    "mobileLink": "Dukung Project",
+    "footerTitle": "Dukung Project",
+    "footerDescription": "Support bersifat sukarela untuk membantu pengembangan dan pemeliharaan Receipt Generator."
   }
 }

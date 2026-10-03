@@ -313,7 +313,8 @@ The notice is intentionally non-blocking:
 - no countdown
 - no forced donation
 - no repeated popup during the same browser session
-- dismissing the notice hides it for the current session
+- dismissing the notice hides only the banner for the current session
+- the Support link remains permanently available in the header and footer
 
 ## Domain
 
