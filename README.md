@@ -297,6 +297,24 @@ Auto-generation is available for:
 
 Generated people and business names are synthetic examples designed to look natural. They are not intended to identify or represent a specific real person or business.
 
+## Support
+
+Receipt Generator is provided as a free tool.
+
+A small dismissible support notice is shown below the main navigation. Users who find the project useful can optionally support its development through Saweria:
+
+```text
+https://saweria.co/fbrhrdynt
+```
+
+The notice is intentionally non-blocking:
+
+- no modal
+- no countdown
+- no forced donation
+- no repeated popup during the same browser session
+- dismissing the notice hides it for the current session
+
 ## Domain
 
 Current domain:

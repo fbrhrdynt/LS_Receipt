@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SupportBanner from '@/components/SupportBanner';
 import HistoryItem from '@/components/HistoryItem';
 import ReceiptPreview from '@/components/ReceiptPreview';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -122,6 +123,7 @@ export default function ReceiptHistory() {
 
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <Header />
+        <SupportBanner />
 
         <main className="container mx-auto flex-1 px-4 py-8 sm:px-6 lg:px-8">
           <div className="mb-8">

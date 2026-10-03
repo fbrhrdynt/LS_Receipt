@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SupportBanner from '@/components/SupportBanner';
 import ReceiptForm from '@/components/ReceiptForm';
 import ReceiptPreview from '@/components/ReceiptPreview';
 import LocalReceiptGenerator from '@/components/LocalReceiptGenerator';
@@ -167,6 +168,7 @@ export default function ReceiptGeneratorPage() {
 
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <Header />
+        <SupportBanner />
 
         <main className="container mx-auto flex-1 px-4 py-8 sm:px-6 lg:px-8">
           <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">

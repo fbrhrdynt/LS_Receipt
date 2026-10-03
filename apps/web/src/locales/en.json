@@ -248,5 +248,12 @@
       "totalAmount": "total payment amount",
       "paymentMethod": "payment method"
     }
+  },
+  "support": {
+    "ariaLabel": "Support Receipt Generator development",
+    "title": "Receipt Generator stays free.",
+    "description": "If this app helps you, you can support its development voluntarily.",
+    "button": "Support",
+    "dismiss": "Dismiss support notice"
   }
 }

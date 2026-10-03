@@ -72,3 +72,12 @@ Receipt paper stays white in either theme.
 
 Reason: this feature accelerates form entry rather than creating a second product or conversation interface.
 
+## Voluntary Support Notice
+
+- A slim support notice appears below the main navigation.
+- It uses normal application surfaces, not a modal or floating overlay.
+- The message states that support is voluntary.
+- The user can dismiss it for the current browser session.
+- The action opens Saweria in a separate tab.
+
+Reason: the project can make users aware of optional support without interrupting receipt creation.

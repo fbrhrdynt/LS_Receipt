@@ -5,6 +5,7 @@ import { ReceiptText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SupportBanner from '@/components/SupportBanner';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HomePage() {
@@ -20,6 +21,7 @@ export default function HomePage() {
 
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <Header />
+        <SupportBanner />
 
         <main className="container mx-auto flex-1 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <section className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)]">

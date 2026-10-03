@@ -248,5 +248,12 @@
       "totalAmount": "jumlah pembayaran",
       "paymentMethod": "metode pembayaran"
     }
+  },
+  "support": {
+    "ariaLabel": "Dukung pengembangan Receipt Generator",
+    "title": "Receipt Generator tetap gratis.",
+    "description": "Jika aplikasi ini membantu, kamu dapat mendukung pengembangannya secara sukarela.",
+    "button": "Support",
+    "dismiss": "Tutup pemberitahuan dukungan"
   }
 }
