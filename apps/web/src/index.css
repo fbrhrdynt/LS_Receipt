@@ -207,3 +207,33 @@ h6 {
     background: #fff !important;
   }
 }
+
+/* FEBRO NEO v0.1 — interface only; thermal receipt templates / print rendering untouched */
+:root{--neo-stroke:#1a2c46;--neo-press:4px 4px 0 #1a2c46;--background:36 100% 97%;--foreground:221 39% 15%;--primary:216 75% 48%;--primary-foreground:0 0% 100%;--muted:38 28% 93%;--accent:214 100% 93%;--card:0 0% 100%;--border:220 32% 73%;--input:218 29% 65%;--radius:.8rem}
+.dark{--neo-stroke:#bdd1f1;--neo-press:4px 4px 0 #809bbb;--background:217 28% 10%;--foreground:216 38% 94%;--primary:213 90% 71%;--primary-foreground:220 38% 13%;--muted:220 23% 18%;--accent:217 30% 22%;--card:220 25% 15%;--border:218 21% 43%;--input:218 20% 48%}
+body{font-family:"DM Sans",ui-sans-serif,system-ui,sans-serif}
+:where(h1,h2,h3){font-family:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;letter-spacing:-.04em}
+/* Deliberately scope to app shell. No rules for .receipt-container, #receipt-preview, or print. */
+#root > div > header{border-bottom:2px solid var(--neo-stroke)}
+#root header :is(a,button){font-weight:700}
+#root header a[href="/"]{font-weight:800;letter-spacing:-.05em}
+#root :is(main,footer) :is(.rounded-md,.rounded-lg,.rounded-xl):not(.receipt-container):not(#receipt-preview){border-radius:14px}
+#root :is(main,footer) :is(.border-border,.border-input):not(.receipt-container):not(#receipt-preview){border-color:hsl(var(--border))}
+#root :is(main,footer) button:not(:disabled),#root header button:not(:disabled){transition:transform .16s ease,box-shadow .16s ease,background-color .16s ease}
+#root :is(main,header) button:not(:disabled):active{transform:translate(1px,1px)}
+#root main > .mb-6:first-child h1,#root main > .mb-8:first-child h1{font-weight:850;line-height:1.1;letter-spacing:-.06em}
+#root main :is(input,textarea,select):not([type="radio"]):not([type="checkbox"]){border-width:2px;min-height:42px;border-radius:11px}
+#root main :is(input,textarea,select,button,a):focus-visible,#root header :is(button,a):focus-visible{outline:3px solid hsl(var(--primary));outline-offset:3px}
+/* Decorative hard shadow only on actionable primary control and active editing surface */
+#root main button.bg-primary:not(:disabled){border:2px solid var(--neo-stroke);box-shadow:3px 3px 0 var(--neo-stroke)}
+#root main button.bg-primary:not(:disabled):hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--neo-stroke)}
+#root main button.bg-primary:not(:disabled):active{box-shadow:none;transform:translate(2px,2px)}
+/* Form / preview workspace remain as two functional columns. */
+#root main .sticky.top-24{border-width:2px;border-color:var(--neo-stroke);box-shadow:none}
+#root main .sticky.top-24 :is(.receipt-container,#receipt-preview){border:none;box-shadow:none}
+#root footer{border-top:2px solid var(--neo-stroke)}
+#root footer a[href="https://saweria.co/fbrhrdynt"]{border:2px solid var(--neo-stroke);border-radius:11px}
+#root :where([role="dialog"]){max-height:min(90dvh,840px)}
+@media(max-width:767px){#root main{padding-top:22px}#root main .sticky.top-24{position:relative;top:auto}#root header{min-height:60px}}
+@media(prefers-reduced-motion:reduce){#root *:not(.receipt-container):not(.receipt-container *){transition:none!important;animation:none!important}}
+
