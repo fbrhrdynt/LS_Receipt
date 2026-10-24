@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SpaceFeatures,{useSpaceWelcome} from '@/components/SpaceFeatures';
 import { Link, useLocation } from 'react-router-dom';
 import { Globe, HeartHandshake, Menu, Moon, Receipt, Sun, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,8 @@ export default function Header() {
   const { language, changeLanguage, t } = useLanguage();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [featuresOpen,setFeaturesOpen]=useState(false);
+  const [welcomeOpen,setWelcomeOpen]=useSpaceWelcome();
 
   const isActive = (path) => location.pathname === path;
   const navItems = [
@@ -58,6 +61,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={()=>setFeaturesOpen(true)}>Febro Space Features</Button>
             <Select value={language} onValueChange={changeLanguage}>
               <SelectTrigger className="hidden w-[118px] sm:flex" aria-label={t('nav.language')}>
                 <Globe className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -109,6 +113,7 @@ export default function Header() {
 
         {menuOpen && (
           <div id="mobile-navigation" className="border-t border-border py-3 md:hidden">
+            <Button variant="outline" className="w-full mb-2" onClick={()=>{setMenuOpen(false);setFeaturesOpen(true);}}>Febro Space Features</Button>
             <nav className="grid gap-1" aria-label={t('nav.primaryNavigation')}>
               {navItems.map((item) => (
                 <Link
@@ -151,6 +156,8 @@ export default function Header() {
           </div>
         )}
       </div>
+      <SpaceFeatures open={featuresOpen} onOpenChange={setFeaturesOpen}/>
+      <SpaceFeatures welcome open={welcomeOpen} onOpenChange={setWelcomeOpen}/>
     </header>
   );
 }
