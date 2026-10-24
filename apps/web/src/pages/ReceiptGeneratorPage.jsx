@@ -229,8 +229,8 @@ export default function ReceiptGeneratorPage() {
                 <Printer aria-hidden="true" />
                 {t('form.print')}
               </Button>
-            </div>
-          </div>}
+            </div>}
+          </div>
 
           {!user && <div className="mb-6 rounded-xl border border-primary/30 bg-primary/5 p-5 sm:p-6"><h2 className="text-lg font-semibold">Buat nota lebih mudah dengan Febro Space</h2><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Login untuk menggunakan Generate Draft with AI, mengunduh receipt dalam format JPG, PNG, atau PDF, serta mencetak nota. Kamu tetap bisa mengisi dan melihat preview nota tanpa login.</p><a href="/auth/login" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">Login / Daftar dengan Febro Space</a></div>}
 
