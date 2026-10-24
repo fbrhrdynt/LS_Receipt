@@ -18,6 +18,9 @@ export default function Header() {
   const { language, changeLanguage, t } = useLanguage();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [account,setAccount]=useState(null);
+  React.useEffect(()=>{fetch('/api/me',{credentials:'same-origin'}).then(r=>r.json()).then(x=>setAccount(x.user||null)).catch(()=>{});},[]);
+  const logout=async()=>{await fetch('/api/logout',{method:'POST',headers:{Origin:location.origin}});window.location.reload();};
   const [featuresOpen,setFeaturesOpen]=useState(false);
   const [welcomeOpen,setWelcomeOpen]=useSpaceWelcome();
 
@@ -61,6 +64,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2">
+            {account && <span className="hidden sm:inline text-sm font-medium">Halo, {account.name||account.email}</span>}
             <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={()=>setFeaturesOpen(true)}>Febro Space Features</Button>
             <Select value={language} onValueChange={changeLanguage}>
               <SelectTrigger className="hidden w-[118px] sm:flex" aria-label={t('nav.language')}>
@@ -113,6 +117,8 @@ export default function Header() {
 
         {menuOpen && (
           <div id="mobile-navigation" className="border-t border-border py-3 md:hidden">
+            {account && <div className="px-3 py-2 text-sm">Halo, {account.name||account.email}</div>}
+            {account && <Button variant="ghost" className="w-full mb-2" onClick={logout}>Logout</Button>}
             <Button variant="outline" className="w-full mb-2" onClick={()=>{setMenuOpen(false);setFeaturesOpen(true);}}>Febro Space Features</Button>
             <nav className="grid gap-1" aria-label={t('nav.primaryNavigation')}>
               {navItems.map((item) => (
