@@ -64,6 +64,8 @@ export default function ReceiptGeneratorPage() {
   const { t } = useLanguage();
   const location = useLocation();
   const [receiptId, setReceiptId] = useState(createReceiptId);
+  const [user,setUser]=useState(null);
+  useEffect(()=>{let active=true;fetch('/api/me',{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(active)setUser(data?.user||null)}).catch(()=>{});return()=>{active=false}},[]);
   const [storageError, setStorageError] = useState('');
   const [formData, setFormData] = useState(createInitialFormData);
 
@@ -177,7 +179,7 @@ export default function ReceiptGeneratorPage() {
               <p className="mt-2 text-muted-foreground">{t('generator.subtitle')}</p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            {user && <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -228,7 +230,9 @@ export default function ReceiptGeneratorPage() {
                 {t('form.print')}
               </Button>
             </div>
-          </div>
+          </div>}
+
+          {!user && <div className="mb-6 rounded-xl border border-primary/30 bg-primary/5 p-5 sm:p-6"><h2 className="text-lg font-semibold">Buat nota lebih mudah dengan Febro Space</h2><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Login untuk menggunakan Generate Draft with AI, mengunduh receipt dalam format JPG, PNG, atau PDF, serta mencetak nota. Kamu tetap bisa mengisi dan melihat preview nota tanpa login.</p><a href="/auth/login" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">Login / Daftar dengan Febro Space</a></div>}
 
           {storageError && (
             <div
@@ -239,7 +243,7 @@ export default function ReceiptGeneratorPage() {
             </div>
           )}
 
-          <LocalReceiptGenerator onGenerate={handleLocalGenerate} />
+          {user && <LocalReceiptGenerator onGenerate={handleLocalGenerate} />}
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
             <div className="order-2 lg:order-1 lg:col-span-7 xl:col-span-8">
